@@ -1,0 +1,19 @@
+# Environment: Google Colab (Python 3.10)
+# Install: pip install -r requirements.txt
+
+
+numpy>=1.23.0
+pandas>=1.5.0
+
+
+Pillow>=9.0.0          # Image.open for step2/3/4 PNGs; img.size for grid dims
+
+
+
+
+
+# os, re, json, base64, zipfile, shutil, hashlib, math, pathlib, pickle, urllib.parse
+
+# ── Google Colab built-ins (pre-installed, not needed outside Colab) ───────
+# google.colab.files  — file upload / download widget
+# IPython.display     — HTML display in notebook

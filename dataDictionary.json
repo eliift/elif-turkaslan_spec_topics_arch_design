@@ -1,0 +1,104 @@
+{
+  "dataset": "Le Corbusier Sketch Dataset",
+  "source_file": "FINALVERI.csv",
+  "n_records": 468,
+  "csv_columns": {
+    "filename": {
+      "type": "string",
+      "description": "Original SVG filename (e.g. 'PART1 (10).svg'). Used as the unique key per sketch. The notebook derives png_name from this by replacing '.svg' with '.png'.",
+      "example": "PART1 (10).svg"
+    },
+    "period": {
+      "type": "string",
+      "description": "Raw period string from the CSV, as entered manually. Mapped in the notebook to a full Part label and a Salubra hex color.",
+      "values": [
+        "the formative years of Charles Edouard Jeanneret",
+        "architectural ideals and social realities",
+        "the ancient sense:late works"
+      ],
+      "annotation": "manual"
+    },
+    "content_label": {
+      "type": "string",
+      "description": "Content category assigned manually by close reading of each sketch. Mapped to a Salubra hex color in the notebook.",
+      "values": [
+        "landscape",
+        "plan",
+        "building",
+        "section",
+        "scene",
+        "facade",
+        "other",
+        "art",
+        "object"
+      ],
+      "annotation": "manual"
+    },
+    "Era": {
+      "type": "integer",
+      "description": "Approximate year of the sketch, entered manually by cross-referencing the drawing with surrounding captions, footnotes, and running page text in the Oeuvre Complete. Collapsed to decade bins (1910, 1920, ...) for color encoding.",
+      "annotation": "manual"
+    },
+    "move": {
+      "type": "integer",
+      "description": "Number of <path> elements in the SVG produced by the 256x256 PNG. Each path represents one vectorized stroke. Used as proxy for design move count (Suwa & Tversky, 1997).",
+      "method": "Potrace PNG→SVG conversion, then path element count",
+      "annotation": "computational"
+    },
+    "Area Covered (Pixels)": {
+      "type": "integer",
+      "description": "Count of non-white pixels on the 256x256 PNG canvas after thresholding. Proxy for occupancy / compositional density. Normalized to [0,1] in the notebook using the 2nd–98th percentile range.",
+      "method": "non-white pixel count on 256x256 canvas",
+      "annotation": "computational"
+    }
+  },
+  "derived_fields": {
+    "part_label": "Full period string mapped from 'period' column in the notebook (e.g. 'Part I — The Formative Years...')",
+    "part_color": "Salubra hex color mapped from 'period' column",
+    "color": "Salubra hex color mapped from 'content_label' column",
+    "era_color": "Salubra hex color mapped from decade bin of 'Era' column",
+    "png_name": "Filename with .svg replaced by .png, used to look up the sketch image",
+    "occ_n": "Occupancy normalized to [0,1] using 2nd-98th percentile of 'Area Covered (Pixels)'",
+    "svgLine": "Deterministic SVG of random line strokes per cell, count = f(move), alpha = f(occ_n). Generated in notebook Step 6, NOT stored in dataset.pkl",
+    "sketchB64": "Base64-encoded WebP thumbnail of the 256x256 sketch PNG. NOT stored in dataset.pkl (too large)"
+  },
+  "color_palette": {
+    "source": "Le Corbusier Salubra collection (1931)",
+    "n_colors": 63,
+    "description": "All hues used for Part, content label, and era encoding are drawn from LC's own Salubra palette.",
+    "part_colors": {
+      "the formative years of Charles Edouard Jeanneret": "#cd5e84",
+      "architectural ideals and social realities": "#f97f47",
+      "the ancient sense:late works": "#bf3c40"
+    },
+    "content_colors": {
+      "landscape": "#cb6248",
+      "plan": "#facde9",
+      "building": "#fd357a",
+      "section": "#578ed4",
+      "scene": "#89b576",
+      "other": "#72403c",
+      "facade": "#c4a1aa",
+      "art": "#E91E8C",
+      "object": "#2C2C2C"
+    },
+    "era_colors": {
+      "1910s": "#719eda",
+      "1920s": "#ff603b",
+      "1930s": "#b63213",
+      "1940s": "#e4cdcb",
+      "1950s": "#dad520",
+      "1960s": "#afdbee"
+    }
+  },
+  "limitations": [
+    "content_label and era fields were assigned by a single coder; inter-rater reliability was not formally tested.",
+    "Era values are approximate for sketches without explicit captions in the Oeuvre Complete.",
+    "Sketches extracted from scanned reproductions; image quality varies across volumes."
+  ],
+  "references": [
+    "Le Corbusier. Oeuvre Complete. 8 vols. Birkhauser, 1999.",
+    "Curtis, W. J. R. Le Corbusier: Ideas and Forms. Phaidon, 1986.",
+    
+  ]
+}

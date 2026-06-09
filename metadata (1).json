@@ -1,0 +1,196 @@
+{
+  "project": {
+    "title": "Le Corbusier Sketch Visualization",
+    "version": "final",
+    "date": "2025-2026",
+    "institution": "Istanbul Technical University (ITU)",
+    "program": "Architectural Design Computing (Mimari Tasarimda Bilisim)",
+    "context": "MSc thesis research"
+  },
+  "dataset": {
+    "n_sketches": 468,
+    "source": "Le Corbusier, Oeuvre Complete, 8 vols. (Birkhauser, 1999)",
+    "access": "ITU EBSCO",
+    "year_range": "1910-1965",
+    "image_format": "PNG",
+    "image_resolution": "256x256 px",
+    "csv_filename": "FINALVERI.csv",
+    "pkl_filename": "dataset.pkl"
+  },
+  "periodization": {
+    "framework": "Curtis, W. J. R. Le Corbusier: Ideas and Forms. Phaidon, 1986.",
+    "parts": {
+      "Part I": {
+        "csv_value": "the formative years of Charles Edouard Jeanneret",
+        "n": 72,
+        "color": "#cd5e84"
+      },
+      "Part II": {
+        "csv_value": "architectural ideals and social realities",
+        "n": 184,
+        "color": "#f97f47"
+      },
+      "Part III": {
+        "csv_value": "the ancient sense:late works",
+        "n": 212,
+        "color": "#bf3c40"
+      }
+    }
+  },
+  "content_labels": {
+    "annotation": "manual, single coder",
+    "categories": {
+      "landscape": {
+        "n": 124,
+        "color": "#cb6248"
+      },
+      "plan": {
+        "n": 98,
+        "color": "#facde9"
+      },
+      "building": {
+        "n": 84,
+        "color": "#fd357a"
+      },
+      "section": {
+        "n": 56,
+        "color": "#578ed4"
+      },
+      "scene": {
+        "n": 36,
+        "color": "#89b576"
+      },
+      "other": {
+        "n": 36,
+        "color": "#72403c"
+      },
+      "art": {
+        "n": 16,
+        "color": "#E91E8C"
+      },
+      "facade": {
+        "n": 10,
+        "color": "#c4a1aa"
+      },
+      "object": {
+        "n": 8,
+        "color": "#2C2C2C"
+      }
+    }
+  },
+  "era_annotation": {
+    "method": "manual — year identified by cross-referencing sketch with captions, footnotes, and running text on the page in the Oeuvre Complete",
+    "annotators": 1,
+    "decade_bins": {
+      "1910s": {
+        "n": 65,
+        "color": "#719eda"
+      },
+      "1920s": {
+        "n": 13,
+        "color": "#ff603b"
+      },
+      "1930s": {
+        "n": 67,
+        "color": "#b63213"
+      },
+      "1940s": {
+        "n": 162,
+        "color": "#e4cdcb"
+      },
+      "1950s": {
+        "n": 134,
+        "color": "#dad520"
+      },
+      "1960s": {
+        "n": 27,
+        "color": "#afdbee"
+      }
+    }
+  },
+  "computed_features": {
+    "move": {
+      "tool": "Potrace",
+      "method": "PNG (256x256) converted to SVG; number of <path> elements counted",
+      "proxy_for": "design move count (Suwa & Tversky, 1997)",
+      "range": "1-1054",
+      "median": 68
+    },
+    "area": {
+      "csv_column": "Area Covered (Pixels)",
+      "method": "non-white pixel count on 256x256 PNG",
+      "proxy_for": "occupancy / compositional density",
+      "normalization": "2nd-98th percentile -> [0,1] as occ_n in notebook"
+    }
+  },
+  "notebooks": {
+    "lc_sketch_viz_firstfinal.ipynb": {
+      "purpose": "Sketch grid visualization (LeCorbusier_sketches.html)",
+      "inputs": [
+        "step2.PNG",
+        "step3.PNG",
+        "step4.png",
+        "FINALVERI.csv",
+        "le_corbusier_PNG_256.zip",
+        "lc_stripes_v11.png"
+      ],
+      "output": "LeCorbusier_sketches.html",
+      "key_steps": [
+        "Step 1: Upload 3 layer PNGs (step2/step3/step4)",
+        "Step 2: Upload FINALVERI.csv, map period/label/era to colors",
+        "Step 3: Upload PNG zip (468 sketches), base64 encode",
+        "Step 4: Upload lc_stripes_v11.png (pure color-stripe layer for lightbox)",
+        "Step 5: Encode all images to base64",
+        "Step 6: Build cell data — derive col/row, svgLine (deterministik stroke SVG), occ_n",
+        "Step 7: Generate HTML",
+        "Step 8: Download HTML"
+      ]
+    },
+    "lc_2_olan.ipynb": {
+      "purpose": "Ridgeline / temporal density chart (lc_ridgeline_standalone.html)",
+      "inputs": [
+        "lc_ridgeline_v6.html"
+      ],
+      "output": "lc_ridgeline_standalone.html",
+      "key_steps": [
+        "Upload lc_ridgeline_v6.html",
+        "Extract CSS/JS blocks by index",
+        "Patch: new Salubra color palette, base curve -> black, decade labels -> short form",
+        "Patch: chronological curve layout, opacity=0.25, date range lines",
+        "Patch: timeline animation fix (last decade font reset on completion)",
+        "Build standalone HTML and download"
+      ]
+    }
+  },
+  "visualization": {
+    "sketch_grid": {
+      "grid": "26 columns x 18 rows = 468 cells",
+      "stripes_per_cell": 5,
+      "stripe_encoding": {
+        "1": "Part/period (Salubra hue)",
+        "2": "Move count (grayscale — darker = more paths)",
+        "3": "Occupancy (amber gradient — higher = denser)",
+        "4": "Content label (Salubra hue)",
+        "5": "Era/decade (Salubra temperature)"
+      },
+      "svgLine_encoding": "Deterministic random-stroke SVG overlay per cell: stroke count = f(move), stroke alpha = f(occ_n), color = partColor"
+    },
+    "ridgeline": {
+      "x_axis": "chronological (1910-1965)",
+      "y_axis": "sketch thumbnails stacked by decade",
+      "curve": "per-content-label chronological curve, thickness = occupancy, color = content label Salubra color",
+      "base_curve": "Part I/II/III ridge curves in black (#000000)"
+    }
+  },
+  "output_files": {
+    "LeCorbusier_sketches.html": "Sketch grid visualization (Tab 02 of combined output)",
+    "lc_ridgeline_standalone.html": "Ridgeline chart standalone",
+    "lc_combined_tabs.html": "Combined: Tab 01 (Dataset Quality Report) + Tab 02 (Sketch Grid)"
+  },
+  "color_palette": {
+    "name": "Salubra (1931)",
+    "designer": "Le Corbusier",
+    "n_colors": 63,
+    "description": "All visual encodings use colors selected from LC's own Salubra palette, grounding the visualization's chromatic language in the architect's sensibility."
+  }
+}
